@@ -3,18 +3,11 @@ varying vec2 vLookup;
 
 uniform float colorMode;
 
-// HSV to RGB conversion
-vec3 hsv2rgb(vec3 c) {
-  vec4 K = vec4(1.0, 2.0/3.0, 1.0/3.0, 3.0);
-  vec3 p = abs(fract(c.xxx + K.xyz) * 6.0 - K.www);
-  return c.z * mix(K.xxx, clamp(p - K.xxx, 0.0, 1.0), c.y);
+vec3 getNormalColor() {
+  return vNorm * 0.5 + 0.5;
 }
 
-void main(){
-
-  // Normal-based coloring (original)
-  vec3 normalCol = vNorm * .5 + .5;
-  
+vec3 getChinatownNeonColor() {
   // Chinatown neon palette - hot pink, red, orange, cyan accents
   vec3 hotPink = vec3(1.0, 0.1, 0.5);
   vec3 neonRed = vec3(1.0, 0.05, 0.15);
@@ -22,31 +15,73 @@ void main(){
   vec3 neonCyan = vec3(0.1, 0.9, 0.95);
   vec3 neonMagenta = vec3(0.95, 0.1, 0.8);
   
-  // Create color variation based on position
   float t = fract(vLookup.x * 5.0 + vLookup.y * 3.0);
   
-  vec3 neonCol;
-  if (t < 0.25) {
-    neonCol = mix(hotPink, neonRed, t * 4.0);
-  } else if (t < 0.5) {
-    neonCol = mix(neonRed, neonOrange, (t - 0.25) * 4.0);
-  } else if (t < 0.75) {
-    neonCol = mix(neonOrange, neonMagenta, (t - 0.5) * 4.0);
-  } else {
-    neonCol = mix(neonMagenta, neonCyan, (t - 0.75) * 4.0);
-  }
+  // Use smoothstep blending instead of if/else
+  vec3 col = mix(hotPink, neonRed, smoothstep(0.0, 0.25, t));
+  col = mix(col, neonOrange, smoothstep(0.25, 0.5, t));
+  col = mix(col, neonMagenta, smoothstep(0.5, 0.75, t));
+  col = mix(col, neonCyan, smoothstep(0.75, 1.0, t));
   
-  // Add neon glow effect - bloom the colors
   float glow = 0.15 + 0.1 * sin(vLookup.x * 20.0 + vLookup.y * 15.0);
-  neonCol = neonCol + glow;
-  neonCol = clamp(neonCol, 0.0, 1.0);
-  
-  // Boost saturation and add slight bloom
-  neonCol = pow(neonCol, vec3(0.85));
-  
-  // Mix between normal and neon based on colorMode uniform
-  vec3 col = mix(normalCol, neonCol, colorMode);
-  
-  gl_FragColor = vec4( col , 1. ); 
+  col = clamp(col + glow, 0.0, 1.0);
+  return pow(col, vec3(0.85));
+}
 
+vec3 getMatchaPeaceColor() {
+  // Matcha/zen palette - soft greens, cream, sage, moss
+  vec3 matchaGreen = vec3(0.53, 0.71, 0.44);
+  vec3 softSage = vec3(0.6, 0.7, 0.55);
+  vec3 cream = vec3(0.96, 0.94, 0.88);
+  vec3 moss = vec3(0.42, 0.55, 0.35);
+  vec3 bamboo = vec3(0.76, 0.78, 0.55);
+  
+  float t = fract(vLookup.x * 4.0 + vLookup.y * 2.5);
+  
+  vec3 col = mix(matchaGreen, softSage, smoothstep(0.0, 0.25, t));
+  col = mix(col, cream, smoothstep(0.25, 0.5, t));
+  col = mix(col, bamboo, smoothstep(0.5, 0.75, t));
+  col = mix(col, moss, smoothstep(0.75, 1.0, t));
+  
+  // Soft peaceful glow
+  float softGlow = 0.05 + 0.03 * sin(vLookup.x * 8.0 + vLookup.y * 6.0);
+  col = col + softGlow;
+  return clamp(col, 0.0, 1.0);
+}
+
+vec3 getOceanBeachColor() {
+  // Navy blue beach palette - deep navy, ocean blue, seafoam, sand, coral
+  vec3 deepNavy = vec3(0.1, 0.15, 0.35);
+  vec3 oceanBlue = vec3(0.2, 0.45, 0.65);
+  vec3 seafoam = vec3(0.5, 0.78, 0.8);
+  vec3 sandBeige = vec3(0.87, 0.8, 0.65);
+  vec3 coralAccent = vec3(0.9, 0.55, 0.5);
+  
+  float t = fract(vLookup.x * 3.5 + vLookup.y * 2.0);
+  
+  vec3 col = mix(deepNavy, oceanBlue, smoothstep(0.0, 0.2, t));
+  col = mix(col, seafoam, smoothstep(0.2, 0.45, t));
+  col = mix(col, sandBeige, smoothstep(0.45, 0.7, t));
+  col = mix(col, coralAccent, smoothstep(0.7, 0.85, t));
+  col = mix(col, deepNavy, smoothstep(0.85, 1.0, t));
+  
+  // Ocean shimmer effect
+  float shimmer = 0.08 + 0.05 * sin(vLookup.x * 15.0 + vLookup.y * 10.0);
+  col = col + shimmer * vec3(0.7, 0.85, 1.0);
+  return clamp(col, 0.0, 1.0);
+}
+
+void main() {
+  // Use step functions for theme selection (avoids if/else issues in older GLSL)
+  float isNormal = step(colorMode, 0.5);
+  float isNeon = step(0.5, colorMode) * step(colorMode, 1.5);
+  float isMatcha = step(1.5, colorMode) * step(colorMode, 2.5);
+  float isBeach = step(2.5, colorMode);
+  
+  vec3 col = getNormalColor() * isNormal +
+             getChinatownNeonColor() * isNeon +
+             getMatchaPeaceColor() * isMatcha +
+             getOceanBeachColor() * isBeach;
+  
+  gl_FragColor = vec4(col, 1.0);
 }
