@@ -168,6 +168,40 @@
       #resetIndicator.complete .progress-circle {
         stroke: rgba(100,255,150,0.9);
       }
+      
+      /* Mouse Laser Trail */
+      .laser-trail {
+        position: fixed;
+        pointer-events: none;
+        z-index: 50;
+        border-radius: 2px;
+        transform-origin: 0 50%;
+      }
+      
+      .laser-trail.normal {
+        background: linear-gradient(90deg, rgba(100, 120, 255, 0.9), rgba(150, 100, 255, 0.6));
+        box-shadow: 0 0 8px rgba(100, 120, 255, 0.8), 0 0 16px rgba(100, 120, 255, 0.4), 0 0 24px rgba(150, 100, 255, 0.3);
+      }
+      
+      .laser-trail.neon {
+        background: linear-gradient(90deg, rgba(255, 0, 100, 0.95), rgba(255, 50, 150, 0.7));
+        box-shadow: 0 0 10px rgba(255, 0, 100, 0.9), 0 0 20px rgba(255, 0, 100, 0.6), 0 0 40px rgba(255, 50, 150, 0.4);
+      }
+      
+      .laser-trail.matcha {
+        background: linear-gradient(90deg, rgba(100, 200, 100, 0.9), rgba(150, 220, 100, 0.6));
+        box-shadow: 0 0 8px rgba(100, 200, 100, 0.8), 0 0 16px rgba(100, 200, 100, 0.4), 0 0 24px rgba(150, 220, 100, 0.3);
+      }
+      
+      .laser-trail.beach {
+        background: linear-gradient(90deg, rgba(30, 144, 255, 0.9), rgba(255, 180, 100, 0.6));
+        box-shadow: 0 0 10px rgba(30, 144, 255, 0.8), 0 0 20px rgba(30, 144, 255, 0.5), 0 0 30px rgba(255, 180, 100, 0.3);
+      }
+      
+      .laser-trail.blizzard {
+        background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(200, 230, 255, 0.7));
+        box-shadow: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 24px rgba(220, 240, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
+      }
     </style>
   </head>
 
@@ -412,6 +446,82 @@
         document.addEventListener('touchstart', startHold);
         document.addEventListener('touchend', endHold);
         document.addEventListener('touchcancel', endHold);
+        
+        // Laser Mouse Trail
+        var trailPoints = [];
+        var maxTrailLength = 25;
+        var lastMouseX = 0;
+        var lastMouseY = 0;
+        var trailContainer = document.createElement('div');
+        trailContainer.id = 'laserTrailContainer';
+        document.body.appendChild(trailContainer);
+        
+        function createTrailSegment(x1, y1, x2, y2, index, total) {
+          var segment = document.createElement('div');
+          segment.className = 'laser-trail ' + themes[currentTheme].name;
+          
+          var dx = x2 - x1;
+          var dy = y2 - y1;
+          var length = Math.sqrt(dx * dx + dy * dy);
+          var angle = Math.atan2(dy, dx) * 180 / Math.PI;
+          
+          var opacity = (index / total) * 0.9 + 0.1;
+          var width = Math.max(1, (index / total) * 3 + 1);
+          
+          segment.style.cssText = 
+            'left: ' + x1 + 'px; ' +
+            'top: ' + (y1 - width/2) + 'px; ' +
+            'width: ' + length + 'px; ' +
+            'height: ' + width + 'px; ' +
+            'opacity: ' + opacity + '; ' +
+            'transform: rotate(' + angle + 'deg);';
+          
+          return segment;
+        }
+        
+        function updateTrail() {
+          trailContainer.innerHTML = '';
+          
+          for (var i = 1; i < trailPoints.length; i++) {
+            var p1 = trailPoints[i - 1];
+            var p2 = trailPoints[i];
+            var segment = createTrailSegment(p1.x, p1.y, p2.x, p2.y, i, trailPoints.length);
+            trailContainer.appendChild(segment);
+          }
+        }
+        
+        function onMouseMove(e) {
+          var mouseX = e.clientX;
+          var mouseY = e.clientY;
+          
+          var dx = mouseX - lastMouseX;
+          var dy = mouseY - lastMouseY;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          
+          if (dist > 3) {
+            trailPoints.push({ x: mouseX, y: mouseY });
+            
+            if (trailPoints.length > maxTrailLength) {
+              trailPoints.shift();
+            }
+            
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+            
+            updateTrail();
+          }
+        }
+        
+        function fadeTrail() {
+          if (trailPoints.length > 0) {
+            trailPoints.shift();
+            updateTrail();
+          }
+        }
+        
+        setInterval(fadeTrail, 30);
+        
+        document.addEventListener('mousemove', onMouseMove);
 
       }
 
