@@ -63,6 +63,44 @@
         letter-spacing: 0.5px;
         z-index: 1000;
       }
+      
+      #resetIndicator {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80px;
+        height: 80px;
+        pointer-events: none;
+        z-index: 999;
+        opacity: 0;
+        transition: opacity 0.15s ease;
+      }
+      #resetIndicator.active {
+        opacity: 1;
+      }
+      #resetIndicator svg {
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+      #resetIndicator .bg-circle {
+        fill: none;
+        stroke: rgba(255,255,255,0.1);
+        stroke-width: 3;
+      }
+      #resetIndicator .progress-circle {
+        fill: none;
+        stroke: rgba(255,255,255,0.8);
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-dasharray: 226;
+        stroke-dashoffset: 226;
+        transition: stroke 0.2s ease;
+      }
+      #resetIndicator.complete .progress-circle {
+        stroke: rgba(100,255,150,0.9);
+      }
     </style>
   </head>
 
@@ -70,6 +108,13 @@
 
     <button id="colorToggle" class="normal">Chinatown Neon</button>
     <div class="theme-indicator">Theme: Normal</div>
+    
+    <div id="resetIndicator">
+      <svg viewBox="0 0 80 80">
+        <circle class="bg-circle" cx="40" cy="40" r="36"></circle>
+        <circle class="progress-circle" cx="40" cy="40" r="36"></circle>
+      </svg>
+    </div>
 
     <!-- Core Libraries -->
     <script src = "lib/three.min.js"                ></script>
@@ -207,6 +252,71 @@
           themeIndicator.textContent = 'Theme: ' + theme.display;
           renderer.setClearColor(theme.bg);
         });
+        
+        // Hold-to-reset functionality
+        var resetIndicator = document.getElementById('resetIndicator');
+        var progressCircle = resetIndicator.querySelector('.progress-circle');
+        var holdStartTime = null;
+        var holdDuration = 3000; // 3 seconds
+        var circumference = 2 * Math.PI * 36; // r=36
+        var isHolding = false;
+        var resetAnimationId = null;
+        
+        function updateResetProgress() {
+          if (!isHolding || !holdStartTime) return;
+          
+          var elapsed = Date.now() - holdStartTime;
+          var progress = Math.min(elapsed / holdDuration, 1);
+          var offset = circumference * (1 - progress);
+          progressCircle.style.strokeDashoffset = offset;
+          
+          if (progress >= 1) {
+            // Reset complete
+            resetIndicator.classList.add('complete');
+            curlParticles.soul.resetRand(0.2);
+            
+            setTimeout(function() {
+              resetIndicator.classList.remove('active', 'complete');
+              progressCircle.style.strokeDashoffset = circumference;
+            }, 300);
+            
+            isHolding = false;
+            holdStartTime = null;
+          } else {
+            resetAnimationId = requestAnimationFrame(updateResetProgress);
+          }
+        }
+        
+        function startHold(e) {
+          // Ignore if clicking on UI elements
+          if (e.target.closest('#colorToggle') || e.target.closest('.theme-indicator')) return;
+          
+          isHolding = true;
+          holdStartTime = Date.now();
+          resetIndicator.classList.add('active');
+          resetIndicator.classList.remove('complete');
+          progressCircle.style.strokeDashoffset = circumference;
+          updateResetProgress();
+        }
+        
+        function endHold() {
+          if (!isHolding) return;
+          
+          isHolding = false;
+          holdStartTime = null;
+          if (resetAnimationId) {
+            cancelAnimationFrame(resetAnimationId);
+          }
+          resetIndicator.classList.remove('active', 'complete');
+          progressCircle.style.strokeDashoffset = circumference;
+        }
+        
+        document.addEventListener('mousedown', startHold);
+        document.addEventListener('mouseup', endHold);
+        document.addEventListener('mouseleave', endHold);
+        document.addEventListener('touchstart', startHold);
+        document.addEventListener('touchend', endHold);
+        document.addEventListener('touchcancel', endHold);
 
       }
 
