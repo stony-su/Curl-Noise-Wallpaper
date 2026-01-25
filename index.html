@@ -1,0 +1,238 @@
+<html>
+
+  <head>
+    <style>
+      body{ margin: 0px; }
+      html{ overflow: hidden }
+      
+      #colorToggle {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 10px 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 12px;
+        font-weight: 500;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        z-index: 1000;
+        letter-spacing: 0.3px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+      }
+      #colorToggle:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+      #colorToggle:active {
+        transform: translateY(0);
+      }
+      #colorToggle.normal {
+        background: rgba(255,255,255,0.1);
+        color: rgba(255,255,255,0.9);
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      }
+      #colorToggle.neon {
+        background: rgba(255,0,100,0.2);
+        color: #ff6b9d;
+        border-color: rgba(255,100,150,0.3);
+        box-shadow: 0 2px 12px rgba(255,0,100,0.2);
+      }
+      #colorToggle.matcha {
+        background: rgba(100,150,100,0.2);
+        color: #8fbc8f;
+        border-color: rgba(140,180,140,0.3);
+        box-shadow: 0 2px 12px rgba(100,150,100,0.2);
+      }
+      #colorToggle.beach {
+        background: rgba(30,60,100,0.3);
+        color: #87ceeb;
+        border-color: rgba(100,150,200,0.3);
+        box-shadow: 0 2px 12px rgba(30,80,150,0.2);
+      }
+      
+      .theme-indicator {
+        position: fixed;
+        top: 60px;
+        right: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        color: rgba(255,255,255,0.4);
+        letter-spacing: 0.5px;
+        z-index: 1000;
+      }
+    </style>
+  </head>
+
+  <body>
+
+    <button id="colorToggle" class="normal">Chinatown Neon</button>
+    <div class="theme-indicator">Theme: Normal</div>
+
+    <!-- Core Libraries -->
+    <script src = "lib/three.min.js"                ></script>
+    <script src = "lib/jquery.min.js"               ></script>
+    <script src = "lib/ShaderLoader.js"             ></script>
+    <script src = "lib/TrackballControls.js"        ></script>
+    
+    <!-- GPGPU Physics Renderer -->
+    <script src = "lib/PhysicsRenderer.js"          ></script>
+
+    <!-- Instanced Mesh System -->
+    <script src = "InstanceMesh.js"                 ></script>
+
+    <!-- Feather Geometry -->
+    <script src = "Curl/Feather.js"                 ></script>
+
+    <!-- Curl Simulation Controller -->
+    <script src = "Curl/Curl.js"                    ></script>
+    
+    <script>
+
+      var camera, renderer, scene, controls, clock;
+      
+      // Uniforms for the GPGPU curl noise simulation
+      var soulUniforms = {
+        dT:        { type: "f", value: 0 },
+        noiseSize: { type: "f", value: 1.5 }  // Controls curl noise scale
+      };
+
+      // Additional body uniforms for rendering
+      var bodyUniforms = {
+        // Will be populated by Curl.js with t_pos, t_oPos, t_ooPos
+        colorMode: { type: "f", value: 0.0 }  // 0 = normal, 1 = neon, 2 = matcha, 3 = beach
+      };
+      
+      var currentTheme = 0;
+      var themes = [
+        { name: 'normal', label: 'Chinatown Neon', display: 'Normal', bg: 0x111122 },
+        { name: 'neon', label: 'Matcha Peace', display: 'Chinatown Neon', bg: 0x0a0a12 },
+        { name: 'matcha', label: 'Ocean Beach', display: 'Matcha Peace', bg: 0x0d1a0d },
+        { name: 'beach', label: 'Normal', display: 'Ocean Beach', bg: 0x0a1525 }
+      ];
+
+      var curlParticles;
+
+      var shaders = new ShaderLoader('shaders');
+
+      shaders.shaderSetLoaded = function(){
+        init();
+        animate();
+      };
+
+      // Load curl noise simulation shader
+      shaders.load('ss-curl', 'curl', 'simulation');
+      
+      // Load vertex and fragment shaders for rendering instanced feathers
+      shaders.load('vs-snake', 'feather', 'vertex');
+      shaders.load('fs-snake', 'feather', 'fragment');
+
+      function init(){
+
+        var w = window.innerWidth;
+        var h = window.innerHeight;
+
+        // Setup camera
+        camera = new THREE.PerspectiveCamera(65, w/h, 0.001, 10);
+        camera.position.z = 2;
+   
+        scene = new THREE.Scene();
+
+        // Setup renderer with high DPI support
+        var dpr = window.devicePixelRatio || 1;
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setPixelRatio(dpr);
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x111122);
+
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', onWindowResize, false);
+
+        // Setup trackball controls for camera interaction
+        controls = new THREE.TrackballControls(camera);
+        controls.rotateSpeed = 2.0;
+        controls.zoomSpeed = 1.2;
+        controls.panSpeed = 0.8;
+
+        clock = new THREE.Clock();
+
+        // Create feather geometry for instanced mesh
+        // Feather(size) returns a THREE.Geometry shaped like a feather
+        var featherGeometry = new Feather(0.015);
+
+        console.log('Vertex Shader:', shaders.vs.feather);
+        console.log('Fragment Shader:', shaders.fs.feather);
+        console.log('Simulation Shader:', shaders.ss.curl);
+
+        // Create the Curl particle system using:
+        // - InstanceMesh.js for efficient instanced rendering
+        // - PhysicsRenderer.js for GPGPU physics simulation
+        // - Feather.js for feather geometry
+        curlParticles = new Curl({
+
+          soulUniforms:     soulUniforms,      // Uniforms for simulation (dT, noiseSize)
+          bodyUniforms:     bodyUniforms,      // Uniforms for rendering
+          
+          geometry:         featherGeometry,   // Feather geometry instead of box
+          instanceNumber:   30000,             // Number of feather instances
+          renderer:         renderer,          // WebGL renderer for GPGPU
+          
+          vertexShader:     shaders.vs.feather,   // Vertex shader for instanced feathers
+          fragmentShader:   shaders.fs.feather,   // Fragment shader for coloring
+          
+          simulationShader: shaders.ss.curl,   // GPGPU curl noise simulation shader
+
+        });
+
+        // Activate the particle system (adds to scene and starts simulation)
+        curlParticles.activate(scene);
+
+        // Optional: Enable debug view to see GPGPU textures
+        // curlParticles.debug();
+        
+        // Setup color theme toggle
+        var toggleBtn = document.getElementById('colorToggle');
+        var themeIndicator = document.querySelector('.theme-indicator');
+        
+        toggleBtn.addEventListener('click', function() {
+          currentTheme = (currentTheme + 1) % 4;
+          var theme = themes[currentTheme];
+          
+          bodyUniforms.colorMode.value = currentTheme;
+          toggleBtn.textContent = theme.label;
+          toggleBtn.className = theme.name;
+          themeIndicator.textContent = 'Theme: ' + theme.display;
+          renderer.setClearColor(theme.bg);
+        });
+
+      }
+
+      
+      function animate(){
+
+        requestAnimationFrame(animate);
+        controls.update();
+
+        // Update time delta for physics simulation
+        soulUniforms.dT.value = clock.getDelta();
+        
+        // Update GPGPU physics simulation
+        curlParticles.update();
+
+        renderer.render(scene, camera);
+      }
+
+
+      function onWindowResize() {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      }
+
+    </script>
+
+  </body>
+</html>
