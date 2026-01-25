@@ -71,17 +71,45 @@ vec3 getOceanBeachColor() {
   return clamp(col, 0.0, 1.0);
 }
 
+vec3 getBlizzardSnowflakeColor() {
+  // Blizzard snowflake palette - pure whites, ice blues, silver
+  vec3 pureWhite = vec3(1.0, 1.0, 1.0);
+  vec3 iceBlue = vec3(0.85, 0.95, 1.0);
+  vec3 frostWhite = vec3(0.95, 0.98, 1.0);
+  vec3 silverIce = vec3(0.9, 0.92, 0.95);
+  vec3 crystalBlue = vec3(0.8, 0.9, 1.0);
+  
+  float t = fract(vLookup.x * 6.0 + vLookup.y * 4.0);
+  
+  vec3 col = mix(pureWhite, iceBlue, smoothstep(0.0, 0.25, t));
+  col = mix(col, frostWhite, smoothstep(0.25, 0.5, t));
+  col = mix(col, crystalBlue, smoothstep(0.5, 0.75, t));
+  col = mix(col, silverIce, smoothstep(0.75, 1.0, t));
+  
+  // Sparkling frost effect
+  float sparkle = 0.1 + 0.15 * sin(vLookup.x * 30.0) * sin(vLookup.y * 25.0);
+  col = col + sparkle * vec3(1.0, 1.0, 1.0);
+  
+  // Add subtle glow
+  float glow = 0.05 + 0.03 * sin(vLookup.x * 12.0 + vLookup.y * 8.0);
+  col = col + glow;
+  
+  return clamp(col, 0.0, 1.0);
+}
+
 void main() {
   // Use step functions for theme selection (avoids if/else issues in older GLSL)
   float isNormal = step(colorMode, 0.5);
   float isNeon = step(0.5, colorMode) * step(colorMode, 1.5);
   float isMatcha = step(1.5, colorMode) * step(colorMode, 2.5);
-  float isBeach = step(2.5, colorMode);
+  float isBeach = step(2.5, colorMode) * step(colorMode, 3.5);
+  float isBlizzard = step(3.5, colorMode);
   
   vec3 col = getNormalColor() * isNormal +
              getChinatownNeonColor() * isNeon +
              getMatchaPeaceColor() * isMatcha +
-             getOceanBeachColor() * isBeach;
+             getOceanBeachColor() * isBeach +
+             getBlizzardSnowflakeColor() * isBlizzard;
   
   gl_FragColor = vec4(col, 1.0);
 }
