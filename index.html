@@ -202,6 +202,40 @@
         background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), rgba(200, 230, 255, 0.7));
         box-shadow: 0 0 12px rgba(255, 255, 255, 0.9), 0 0 24px rgba(220, 240, 255, 0.6), 0 0 40px rgba(255, 255, 255, 0.4);
       }
+      
+      /* Helix Particles */
+      .helix-particle {
+        position: fixed;
+        pointer-events: none;
+        z-index: 51;
+        border-radius: 50%;
+        transition: opacity 0.1s ease;
+      }
+      
+      .helix-particle.normal {
+        background: radial-gradient(circle, rgba(150, 130, 255, 1) 0%, rgba(100, 120, 255, 0.8) 50%, transparent 100%);
+        box-shadow: 0 0 6px rgba(130, 120, 255, 0.9), 0 0 12px rgba(100, 100, 255, 0.5);
+      }
+      
+      .helix-particle.neon {
+        background: radial-gradient(circle, rgba(255, 100, 180, 1) 0%, rgba(255, 0, 100, 0.8) 50%, transparent 100%);
+        box-shadow: 0 0 8px rgba(255, 0, 100, 1), 0 0 16px rgba(255, 50, 150, 0.7), 0 0 24px rgba(255, 0, 100, 0.4);
+      }
+      
+      .helix-particle.matcha {
+        background: radial-gradient(circle, rgba(150, 255, 150, 1) 0%, rgba(100, 200, 100, 0.8) 50%, transparent 100%);
+        box-shadow: 0 0 6px rgba(100, 220, 100, 0.9), 0 0 12px rgba(80, 180, 80, 0.5);
+      }
+      
+      .helix-particle.beach {
+        background: radial-gradient(circle, rgba(100, 200, 255, 1) 0%, rgba(255, 200, 120, 0.8) 50%, transparent 100%);
+        box-shadow: 0 0 8px rgba(30, 144, 255, 0.9), 0 0 14px rgba(255, 180, 100, 0.6);
+      }
+      
+      .helix-particle.blizzard {
+        background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(220, 240, 255, 0.9) 50%, transparent 100%);
+        box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(220, 240, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
+      }
     </style>
   </head>
 
