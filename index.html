@@ -372,6 +372,115 @@
       
       .audio-display.blizzard .song-title { color: rgba(255, 255, 255, 0.98); text-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
       .audio-display.blizzard .song-artist { color: rgba(220, 240, 255, 0.6); }
+      
+      /* Mouse Mode Toggle */
+      .mouse-mode-toggle {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        padding: 10px 16px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 11px;
+        font-weight: 500;
+        border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        letter-spacing: 0.3px;
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .mouse-mode-toggle:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      }
+      
+      .mouse-mode-toggle.off {
+        background: rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.5);
+      }
+      
+      .mouse-mode-toggle.attract {
+        background: rgba(100, 200, 255, 0.2);
+        color: rgba(100, 200, 255, 0.9);
+        border-color: rgba(100, 200, 255, 0.3);
+        box-shadow: 0 2px 12px rgba(100, 200, 255, 0.2);
+      }
+      
+      .mouse-mode-toggle.repel {
+        background: rgba(255, 100, 100, 0.2);
+        color: rgba(255, 100, 100, 0.9);
+        border-color: rgba(255, 100, 100, 0.3);
+        box-shadow: 0 2px 12px rgba(255, 100, 100, 0.2);
+      }
+      
+      .mouse-mode-icon {
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        position: relative;
+        transition: all 0.3s ease;
+      }
+      
+      .mouse-mode-toggle.off .mouse-mode-icon {
+        border: 2px solid rgba(255,255,255,0.3);
+      }
+      
+      .mouse-mode-toggle.attract .mouse-mode-icon {
+        border: 2px solid rgba(100, 200, 255, 0.8);
+        box-shadow: inset 0 0 8px rgba(100, 200, 255, 0.6);
+      }
+      
+      .mouse-mode-toggle.attract .mouse-mode-icon::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 4px;
+        height: 4px;
+        background: rgba(100, 200, 255, 0.9);
+        border-radius: 50%;
+        box-shadow: 0 0 6px rgba(100, 200, 255, 0.8);
+      }
+      
+      .mouse-mode-toggle.repel .mouse-mode-icon {
+        border: 2px solid rgba(255, 100, 100, 0.8);
+      }
+      
+      .mouse-mode-toggle.repel .mouse-mode-icon::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 12px;
+        height: 12px;
+        border: 2px solid rgba(255, 100, 100, 0.6);
+        border-radius: 50%;
+        animation: repelPulse 1s ease-out infinite;
+      }
+      
+      @keyframes repelPulse {
+        0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+        100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+      }
+      
+      .mouse-mode-hint {
+        position: fixed;
+        top: 60px;
+        left: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        font-size: 10px;
+        color: rgba(255,255,255,0.35);
+        letter-spacing: 0.5px;
+        z-index: 1000;
+      }
     </style>
   </head>
 
@@ -379,6 +488,12 @@
 
     <button id="colorToggle" class="normal">Chinatown Neon</button>
     <div class="theme-indicator">Theme: Normal</div>
+    
+    <button class="mouse-mode-toggle off" id="mouseModeToggle">
+      <div class="mouse-mode-icon"></div>
+      <span>Mouse: Off</span>
+    </button>
+    <div class="mouse-mode-hint">Click to cycle modes</div>
     
     <div class="center-display normal" id="centerDisplay">
       <div class="center-title">Mesher</div>
@@ -445,7 +560,9 @@
       var soulUniforms = {
         dT:        { type: "f", value: 0 },
         noiseSize: { type: "f", value: 1.5 },  // Controls curl noise scale
-        audioLevel: { type: "f", value: 0.0 }  // Audio reactivity level (0-1)
+        audioLevel: { type: "f", value: 0.0 },  // Audio reactivity level (0-1)
+        mousePos:  { type: "v3", value: new THREE.Vector3(0, 0, 0) },  // Mouse position in world space
+        mouseForce: { type: "f", value: 0.0 }  // -1 = repel, 0 = off, 1 = attract
       };
 
       // Additional body uniforms for rendering
@@ -842,6 +959,61 @@
           var theme = themes[currentTheme];
           audioDisplay.className = 'audio-display ' + theme.name;
           audioVisualizer.className = 'audio-visualizer ' + theme.name + (audioEnabled ? ' active' : '');
+        });
+        
+        // Mouse Attraction/Repulsion System
+        var mouseModeToggle = document.getElementById('mouseModeToggle');
+        var mouseModeHint = document.querySelector('.mouse-mode-hint');
+        var mouseMode = 0; // 0 = off, 1 = attract, 2 = repel
+        var mouseModes = [
+          { name: 'off', label: 'Mouse: Off', force: 0.0 },
+          { name: 'attract', label: 'Mouse: Attract', force: 1.0 },
+          { name: 'repel', label: 'Mouse: Repel', force: -1.0 }
+        ];
+        
+        // Raycaster for converting screen coords to world coords
+        var raycaster = new THREE.Raycaster();
+        var mouseNDC = new THREE.Vector2();
+        var mousePlane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+        var mouseWorldPos = new THREE.Vector3();
+        
+        function updateMouseWorldPosition(e) {
+          // Convert screen coords to normalized device coordinates (-1 to 1)
+          mouseNDC.x = (e.clientX / window.innerWidth) * 2 - 1;
+          mouseNDC.y = -(e.clientY / window.innerHeight) * 2 + 1;
+          
+          // Cast ray from camera through mouse position
+          raycaster.setFromCamera(mouseNDC, camera);
+          
+          // Intersect with a plane at z=0
+          raycaster.ray.intersectPlane(mousePlane, mouseWorldPos);
+          
+          // Update uniform
+          soulUniforms.mousePos.value.copy(mouseWorldPos);
+        }
+        
+        document.addEventListener('mousemove', function(e) {
+          if (mouseMode !== 0) {
+            updateMouseWorldPosition(e);
+          }
+        });
+        
+        mouseModeToggle.addEventListener('click', function() {
+          mouseMode = (mouseMode + 1) % 3;
+          var mode = mouseModes[mouseMode];
+          
+          mouseModeToggle.className = 'mouse-mode-toggle ' + mode.name;
+          mouseModeToggle.querySelector('span').textContent = mode.label;
+          soulUniforms.mouseForce.value = mode.force;
+          
+          // Update hint text
+          if (mouseMode === 0) {
+            mouseModeHint.textContent = 'Click to cycle modes';
+          } else if (mouseMode === 1) {
+            mouseModeHint.textContent = 'Particles follow cursor';
+          } else {
+            mouseModeHint.textContent = 'Particles flee cursor';
+          }
         });
 
       }

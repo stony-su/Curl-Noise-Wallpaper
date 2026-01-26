@@ -4,6 +4,8 @@ uniform sampler2D t_pos;
 uniform float dT;
 uniform float noiseSize;
 uniform float audioLevel;
+uniform vec3  mousePos;
+uniform float mouseForce;
 uniform vec2  resolution;
 
 varying vec2 vUv;
@@ -32,6 +34,18 @@ void main(){
   vec3 curl = curlNoise( pos.xyz * dynamicNoiseSize );
 
   vel += curl * .0001 * audioBoost;
+  
+  // Mouse attraction/repulsion
+  if (mouseForce != 0.0) {
+    vec3 toMouse = mousePos - pos.xyz;
+    float dist = length(toMouse);
+    float influence = 1.0 / (1.0 + dist * dist * 8.0); // Falloff with distance
+    vec3 mouseDir = normalize(toMouse);
+    
+    // Apply force: positive = attract, negative = repel
+    vel += mouseDir * mouseForce * influence * 0.002;
+  }
+  
   vel *= .97 - audioLevel * 0.02; // dampening varies with audio
 
   vec3 p = pos.xyz + vel;
