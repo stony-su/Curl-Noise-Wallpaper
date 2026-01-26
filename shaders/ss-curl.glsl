@@ -3,6 +3,7 @@ uniform sampler2D t_pos;
 
 uniform float dT;
 uniform float noiseSize;
+uniform float audioLevel;
 uniform vec2  resolution;
 
 varying vec2 vUv;
@@ -24,10 +25,14 @@ void main(){
 
   vec3 vel = pos.xyz - oPos.xyz;
 
-  vec3 curl = curlNoise( pos.xyz * noiseSize );
+  // Audio reactive curl intensity - particles move faster with audio
+  float audioBoost = 1.0 + audioLevel * 2.5;
+  float dynamicNoiseSize = noiseSize * (1.0 + audioLevel * 0.5);
+  
+  vec3 curl = curlNoise( pos.xyz * dynamicNoiseSize );
 
-  vel += curl * .0001;
-  vel *= .97; // dampening
+  vel += curl * .0001 * audioBoost;
+  vel *= .97 - audioLevel * 0.02; // dampening varies with audio
 
   vec3 p = pos.xyz + vel;
 
