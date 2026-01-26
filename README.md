@@ -1,3 +1,3 @@
-GPGPU physics simulation made up of instanced meshes - wallpaper edition /br
-hold mouse to reset animation /br
+GPGPU physics simulation made up of instanced meshes - wallpaper edition  
+hold mouse to reset animation  
 click button to switch between modes
