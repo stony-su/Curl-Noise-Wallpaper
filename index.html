@@ -496,8 +496,8 @@
       
       .mouse-mode-hint {
         position: fixed;
-        top: 60px;
-        left: 20px;
+        top: 62px;
+        left: 36px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-size: 10px;
         color: rgba(255,255,255,0.35);
@@ -714,8 +714,8 @@
 
   <body>
 
-    <button id="colorToggle" class="normal">Chinatown Neon</button>
-    <div class="theme-indicator">Theme: Normal</div>
+    <button id="colorToggle" class="normal">Normal</button>
+    <div class="theme-indicator">Next Theme: Chinatown</div>
     
     <button class="mouse-mode-toggle off" id="mouseModeToggle">
       <div class="mouse-mode-icon"></div>
@@ -868,10 +868,10 @@
       
       var currentTheme = 0;
       var themes = [
-        { name: 'normal', label: 'Chinatown Neon', display: 'Normal', bg: 0x111122 },
-        { name: 'neon', label: 'Matcha', display: 'Chinatown Neon', bg: 0x0a0a12 },
-        { name: 'matcha', label: 'Ocean Beach', display: 'Matcha', bg: 0x0d1a0d },
-        { name: 'beach', label: 'Blizzard', display: 'Ocean Beach', bg: 0x0a1525 },
+        { name: 'normal', label: 'Chinatown', display: 'Normal', bg: 0x111122 },
+        { name: 'neon', label: 'Matcha', display: 'Chinatown', bg: 0x0a0a12 },
+        { name: 'matcha', label: 'Ocean', display: 'Matcha', bg: 0x0d1a0d },
+        { name: 'beach', label: 'Blizzard', display: 'Ocean', bg: 0x0a1525 },
         { name: 'blizzard', label: 'Normal', display: 'Blizzard', bg: 0x1a2530 }
       ];
 
@@ -993,9 +993,9 @@
           var theme = themes[currentTheme];
           
           bodyUniforms.colorMode.value = currentTheme;
-          toggleBtn.textContent = theme.label;
+          toggleBtn.textContent = theme.display;
           toggleBtn.className = theme.name;
-          themeIndicator.textContent = 'Theme: ' + theme.display;
+          themeIndicator.textContent = 'Next Theme: ' + theme.label;
           renderer.setClearColor(theme.bg);
           
           // Update center display theme
