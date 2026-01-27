@@ -27,13 +27,16 @@ void main(){
 
   vec3 vel = pos.xyz - oPos.xyz;
 
+  // Time-based speed multiplier (dT includes speed setting)
+  float timeScale = dT * 60.0; // Normalize to ~60fps baseline
+  
   // Audio reactive curl intensity - particles move faster with audio
   float audioBoost = 1.0 + audioLevel * 2.5;
   float dynamicNoiseSize = noiseSize * (1.0 + audioLevel * 0.5);
   
   vec3 curl = curlNoise( pos.xyz * dynamicNoiseSize );
 
-  vel += curl * .0001 * audioBoost;
+  vel += curl * .0001 * audioBoost * timeScale;
   
   // Mouse attraction/repulsion
   if (mouseForce != 0.0) {
@@ -43,10 +46,10 @@ void main(){
     vec3 mouseDir = normalize(toMouse);
     
     // Apply force: positive = attract, negative = repel
-    vel += mouseDir * mouseForce * influence * 0.002;
+    vel += mouseDir * mouseForce * influence * 0.002 * timeScale;
   }
   
-  vel *= .97 - audioLevel * 0.02; // dampening varies with audio
+  vel *= pow(.97 - audioLevel * 0.02, timeScale); // dampening varies with audio and speed
 
   vec3 p = pos.xyz + vel;
 
