@@ -497,7 +497,7 @@
       .mouse-mode-hint {
         position: fixed;
         top: 62px;
-        left: 36px;
+        left: 25px;
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-size: 10px;
         color: rgba(255,255,255,0.35);
@@ -709,6 +709,135 @@
         opacity: 1;
         pointer-events: auto;
       }
+      
+      /* Theme-specific settings panel styles */
+      .settings-panel.neon {
+        background: rgba(20, 10, 20, 0.95);
+        border-left-color: rgba(255, 0, 100, 0.2);
+      }
+      .settings-panel.neon h2 {
+        color: rgba(255, 100, 150, 0.6);
+        border-bottom-color: rgba(255, 0, 100, 0.2);
+      }
+      .settings-panel.neon .settings-group label {
+        color: rgba(255, 150, 180, 0.9);
+      }
+      .settings-panel.neon .value-display {
+        color: rgba(255, 100, 150, 0.9);
+      }
+      .settings-panel.neon .settings-slider::-webkit-slider-thumb {
+        background: linear-gradient(135deg, rgba(255, 0, 100, 0.9), rgba(255, 100, 150, 0.9));
+        box-shadow: 0 2px 8px rgba(255, 0, 100, 0.5);
+      }
+      .settings-panel.neon .settings-slider::-moz-range-thumb {
+        background: linear-gradient(135deg, rgba(255, 0, 100, 0.9), rgba(255, 100, 150, 0.9));
+        box-shadow: 0 2px 8px rgba(255, 0, 100, 0.5);
+      }
+      .settings-panel.neon .toggle-switch.active {
+        background: linear-gradient(135deg, rgba(255, 0, 100, 0.6), rgba(255, 100, 150, 0.6));
+      }
+      .settings-panel.neon .settings-toggle-switch label {
+        color: rgba(255, 150, 180, 0.9);
+      }
+      .settings-panel.neon .settings-divider {
+        background: rgba(255, 0, 100, 0.15);
+      }
+      
+      .settings-panel.matcha {
+        background: rgba(15, 25, 15, 0.95);
+        border-left-color: rgba(100, 180, 100, 0.2);
+      }
+      .settings-panel.matcha h2 {
+        color: rgba(140, 190, 140, 0.6);
+        border-bottom-color: rgba(100, 180, 100, 0.2);
+      }
+      .settings-panel.matcha .settings-group label {
+        color: rgba(180, 220, 180, 0.9);
+      }
+      .settings-panel.matcha .value-display {
+        color: rgba(150, 220, 150, 0.9);
+      }
+      .settings-panel.matcha .settings-slider::-webkit-slider-thumb {
+        background: linear-gradient(135deg, rgba(100, 180, 100, 0.9), rgba(150, 220, 100, 0.9));
+        box-shadow: 0 2px 8px rgba(100, 180, 100, 0.5);
+      }
+      .settings-panel.matcha .settings-slider::-moz-range-thumb {
+        background: linear-gradient(135deg, rgba(100, 180, 100, 0.9), rgba(150, 220, 100, 0.9));
+        box-shadow: 0 2px 8px rgba(100, 180, 100, 0.5);
+      }
+      .settings-panel.matcha .toggle-switch.active {
+        background: linear-gradient(135deg, rgba(100, 180, 100, 0.6), rgba(150, 220, 100, 0.6));
+      }
+      .settings-panel.matcha .settings-toggle-switch label {
+        color: rgba(180, 220, 180, 0.9);
+      }
+      .settings-panel.matcha .settings-divider {
+        background: rgba(100, 180, 100, 0.15);
+      }
+      
+      .settings-panel.beach {
+        background: rgba(10, 20, 35, 0.95);
+        border-left-color: rgba(30, 144, 255, 0.2);
+      }
+      .settings-panel.beach h2 {
+        color: rgba(135, 180, 220, 0.6);
+        border-bottom-color: rgba(30, 144, 255, 0.2);
+      }
+      .settings-panel.beach .settings-group label {
+        color: rgba(135, 206, 235, 0.9);
+      }
+      .settings-panel.beach .value-display {
+        color: rgba(100, 180, 255, 0.9);
+      }
+      .settings-panel.beach .settings-slider::-webkit-slider-thumb {
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.9), rgba(255, 180, 100, 0.9));
+        box-shadow: 0 2px 8px rgba(30, 144, 255, 0.5);
+      }
+      .settings-panel.beach .settings-slider::-moz-range-thumb {
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.9), rgba(255, 180, 100, 0.9));
+        box-shadow: 0 2px 8px rgba(30, 144, 255, 0.5);
+      }
+      .settings-panel.beach .toggle-switch.active {
+        background: linear-gradient(135deg, rgba(30, 144, 255, 0.6), rgba(255, 180, 100, 0.6));
+      }
+      .settings-panel.beach .settings-toggle-switch label {
+        color: rgba(135, 206, 235, 0.9);
+      }
+      .settings-panel.beach .settings-divider {
+        background: rgba(30, 144, 255, 0.15);
+      }
+      
+      .settings-panel.blizzard {
+        background: rgba(25, 35, 45, 0.95);
+        border-left-color: rgba(255, 255, 255, 0.2);
+      }
+      .settings-panel.blizzard h2 {
+        color: rgba(255, 255, 255, 0.6);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+      }
+      .settings-panel.blizzard .settings-group label {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .settings-panel.blizzard .value-display {
+        color: rgba(220, 240, 255, 0.95);
+      }
+      .settings-panel.blizzard .settings-slider::-webkit-slider-thumb {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(200, 230, 255, 0.9));
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
+      }
+      .settings-panel.blizzard .settings-slider::-moz-range-thumb {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(200, 230, 255, 0.9));
+        box-shadow: 0 2px 8px rgba(255, 255, 255, 0.5);
+      }
+      .settings-panel.blizzard .toggle-switch.active {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(200, 230, 255, 0.5));
+      }
+      .settings-panel.blizzard .settings-toggle-switch label {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .settings-panel.blizzard .settings-divider {
+        background: rgba(255, 255, 255, 0.15);
+      }
     </style>
   </head>
 
@@ -754,6 +883,14 @@
       
       <div class="settings-divider"></div>
       
+      <div class="settings-group">
+        <label>Mouse Force Strength <span class="value-display" id="forceStrengthValue">1.0x</span></label>
+        <input type="range" class="settings-slider" id="forceStrengthSlider" min="0.1" max="5" step="0.1" value="1">
+        <p class="settings-note">Adjusts attract/repel intensity</p>
+      </div>
+      
+      <div class="settings-divider"></div>
+      
       <div class="settings-toggle-switch">
         <label>Show Clock</label>
         <div class="toggle-switch active" id="clockToggle"></div>
@@ -762,6 +899,11 @@
       <div class="settings-toggle-switch">
         <label>Show Audio</label>
         <div class="toggle-switch active" id="audioVisibilityToggle"></div>
+      </div>
+      
+      <div class="settings-toggle-switch">
+        <label>Hold to Reset</label>
+        <div class="toggle-switch active" id="holdResetToggle"></div>
       </div>
       
       <div class="settings-divider"></div>
@@ -1000,6 +1142,9 @@
           
           // Update center display theme
           centerDisplay.className = 'center-display ' + theme.name;
+          
+          // Update settings panel theme
+          settingsPanel.className = 'settings-panel' + (settingsPanelOpen ? ' open' : '') + ' ' + theme.name;
         });
         
         // Hold-to-reset functionality
@@ -1010,6 +1155,7 @@
         var circumference = 2 * Math.PI * 36; // r=36
         var isHolding = false;
         var resetAnimationId = null;
+        var holdResetEnabled = true; // Toggle for enabling/disabling hold reset
         
         function updateResetProgress() {
           if (!isHolding || !holdStartTime) return;
@@ -1037,6 +1183,9 @@
         }
         
         function startHold(e) {
+          // Check if hold reset is enabled
+          if (!holdResetEnabled) return;
+          
           // Ignore if clicking on UI elements
           if (e.target.closest('#colorToggle') || 
               e.target.closest('.theme-indicator') ||
@@ -1172,24 +1321,24 @@
         
         // Music playlist
         var playlist = [
-          "39  Baldur's Gate 3 Original Soundtrack - Down By The River.mp3",
-          "ATARAXIA - Patterns.mp3",
-          "Belle - Swarms of Song _ Belle (Original Motion Picture Soundtrack) - English Edition.mp3",
+          "A Million Dreams.mp3",
+          "ATARAXIA.mp3",
+          "Compass.mp3",
+          "Down By The River.mp3",
           "Dragon Age Inquisition Theme.mp3",
-          "Forgotten Words (忘れじの言の葉) ／DAZBEE cover.mp3",
           "Ghost Duet - Louie Zong.mp3",
-          "girl in red - girls.mp3",
-          "Grover Washington Jr. - Just the Two of Us (feat. Bill Withers) (Official Lyric Video).mp3",
-          "Mili - Compass [Limbus Company].mp3",
+          "Girls.mp3",
+          "Just the Two of Us.mp3",
           "Quiet Galaxy.mp3",
-          "Rokudenashi - Spica【Official Music Video】.mp3",
-          "secret base ~Kimi ga Kureta Mono~ (10 years after ver.) - AnoHana ED - Lyrics.mp3",
-          "Suzume no Tojimari『Suzume』Theme Song.mp3",
-          "The Chainsmokers & Coldplay - Something Just Like This (Official Lyric Video).mp3",
-          "The Greatest Showman Cast - A Million Dreams (Official Audio).mp3",
-          "Von - Patterns ft. Emi Evans.mp3",
-          "You Will Be Okay Sing-Along _ Helluva Boss _ Prime Video.mp3",
-          "妖精の霧.mp3"
+          "Secret Base.mp3",
+          "Something Just Like This.mp3",
+          "Spica.mp3",
+          "Suzume.mp3",
+          "Swarms of Song.mp3",
+          "Von.mp3",
+          "You Will Be Okay.mp3",
+          "妖精の霧.mp3",
+          "忘れじの言の葉.mp3"
         ];
         
         var currentTrack = 0;
@@ -1359,6 +1508,7 @@
         var mouseModeToggle = document.getElementById('mouseModeToggle');
         var mouseModeHint = document.querySelector('.mouse-mode-hint');
         var mouseMode = 0; // 0 = off, 1 = attract, 2 = repel
+        var forceStrength = 1.0; // Multiplier for force intensity
         var mouseModes = [
           { name: 'off', label: 'Mouse: Off', force: 0.0 },
           { name: 'attract', label: 'Mouse: Attract', force: 1.0 },
@@ -1398,7 +1548,7 @@
           
           mouseModeToggle.className = 'mouse-mode-toggle ' + mode.name;
           mouseModeToggle.querySelector('span').textContent = mode.label;
-          soulUniforms.mouseForce.value = mode.force;
+          soulUniforms.mouseForce.value = mode.force * forceStrength;
           
           // Update hint text
           if (mouseMode === 0) {
@@ -1421,14 +1571,14 @@
         
         function openSettings() {
           settingsPanelOpen = true;
-          settingsPanel.classList.add('open');
+          settingsPanel.className = 'settings-panel open ' + themes[currentTheme].name;
           settingsOverlay.classList.add('active');
           settingsToggle.classList.add('active');
         }
         
         function closeSettings() {
           settingsPanelOpen = false;
-          settingsPanel.classList.remove('open');
+          settingsPanel.className = 'settings-panel ' + themes[currentTheme].name;
           settingsOverlay.classList.remove('active');
           settingsToggle.classList.remove('active');
         }
@@ -1501,6 +1651,18 @@
           }
         });
         
+        // Force Strength Slider
+        var forceStrengthSlider = document.getElementById('forceStrengthSlider');
+        var forceStrengthValue = document.getElementById('forceStrengthValue');
+        
+        forceStrengthSlider.addEventListener('input', function() {
+          forceStrength = parseFloat(this.value);
+          forceStrengthValue.textContent = forceStrength.toFixed(1) + 'x';
+          // Update current force with new strength
+          var mode = mouseModes[mouseMode];
+          soulUniforms.mouseForce.value = mode.force * forceStrength;
+        });
+        
         // Clock Visibility Toggle
         var clockToggle = document.getElementById('clockToggle');
         var clockVisible = true;
@@ -1521,6 +1683,14 @@
           audioVisibilityToggle.classList.toggle('active', audioVisible);
           musicPlayer.style.opacity = audioVisible ? '1' : '0';
           musicPlayer.style.pointerEvents = audioVisible ? 'auto' : 'none';
+        });
+        
+        // Hold Reset Toggle
+        var holdResetToggle = document.getElementById('holdResetToggle');
+        
+        holdResetToggle.addEventListener('click', function() {
+          holdResetEnabled = !holdResetEnabled;
+          holdResetToggle.classList.toggle('active', holdResetEnabled);
         });
 
       }
