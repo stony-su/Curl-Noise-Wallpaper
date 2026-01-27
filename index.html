@@ -133,7 +133,7 @@
       
       #resetIndicator {
         position: fixed;
-        top: 50%;
+        top: calc(50% + 150px);
         left: 50%;
         transform: translate(-50%, -50%);
         width: 80px;
@@ -237,8 +237,8 @@
         box-shadow: 0 0 10px rgba(255, 255, 255, 1), 0 0 20px rgba(220, 240, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.5);
       }
       
-      /* Audio Display Widget */
-      .audio-display {
+      /* Music Player Widget */
+      .music-player {
         position: fixed;
         bottom: 30px;
         left: 50%;
@@ -246,43 +246,17 @@
         text-align: center;
         z-index: 100;
         transition: all 0.4s ease;
-      }
-      
-      .audio-toggle {
-        padding: 8px 16px;
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 11px;
-        font-weight: 500;
-        border: 1px solid rgba(255,255,255,0.15);
-        border-radius: 20px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        letter-spacing: 0.5px;
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        background: rgba(255,255,255,0.08);
-        color: rgba(255,255,255,0.7);
-        margin-bottom: 12px;
-      }
-      
-      .audio-toggle:hover {
-        background: rgba(255,255,255,0.15);
-        transform: scale(1.02);
-      }
-      
-      .audio-toggle.active {
-        background: rgba(100,255,150,0.2);
-        border-color: rgba(100,255,150,0.4);
-        color: rgba(100,255,150,0.9);
+        padding: 16px 24px;
+        min-width: 380px;
       }
       
       .audio-visualizer {
         display: flex;
         justify-content: center;
         align-items: flex-end;
-        height: 32px;
-        gap: 3px;
-        margin-bottom: 10px;
+        height: 28px;
+        gap: 2px;
+        margin-bottom: 12px;
         opacity: 0;
         transition: opacity 0.3s ease;
       }
@@ -293,7 +267,7 @@
       
       .audio-bar {
         width: 3px;
-        min-height: 3px;
+        min-height: 2px;
         border-radius: 2px;
         transition: height 0.05s ease, background 0.3s ease;
       }
@@ -323,55 +297,104 @@
         box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
       }
       
-      .song-info {
-        opacity: 0;
-        transition: opacity 0.4s ease;
-        max-width: 300px;
-      }
-      
-      .song-info.active {
-        opacity: 1;
-      }
-      
       .song-title {
         font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         font-size: 13px;
         font-weight: 500;
         letter-spacing: 0.5px;
-        margin-bottom: 4px;
+        margin-bottom: 14px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 340px;
+        margin-left: auto;
+        margin-right: auto;
         transition: color 0.4s ease;
       }
       
-      .song-artist {
-        font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-        font-size: 11px;
-        font-weight: 400;
-        letter-spacing: 0.3px;
-        opacity: 0.6;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        transition: color 0.4s ease;
+      .player-controls {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
       }
       
-      /* Theme-specific song info colors */
-      .audio-display.normal .song-title { color: rgba(200, 210, 255, 0.9); }
-      .audio-display.normal .song-artist { color: rgba(180, 190, 220, 0.6); }
+      .player-btn {
+        width: 32px;
+        height: 32px;
+        border: none;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.08);
+        color: rgba(255,255,255,0.8);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        padding: 0;
+      }
       
-      .audio-display.neon .song-title { color: rgba(255, 100, 150, 0.95); text-shadow: 0 0 20px rgba(255, 0, 100, 0.4); }
-      .audio-display.neon .song-artist { color: rgba(255, 150, 180, 0.6); }
+      .player-btn:hover {
+        background: rgba(255,255,255,0.15);
+        transform: scale(1.08);
+      }
       
-      .audio-display.matcha .song-title { color: rgba(180, 220, 180, 0.9); }
-      .audio-display.matcha .song-artist { color: rgba(140, 180, 140, 0.6); }
+      .player-btn.active {
+        background: rgba(100, 150, 255, 0.3);
+        color: rgba(150, 180, 255, 1);
+      }
       
-      .audio-display.beach .song-title { color: rgba(135, 206, 235, 0.95); text-shadow: 0 0 15px rgba(30, 144, 255, 0.3); }
-      .audio-display.beach .song-artist { color: rgba(180, 200, 220, 0.6); }
+      .player-btn.play-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+        background: rgba(255,255,255,0.12);
+      }
       
-      .audio-display.blizzard .song-title { color: rgba(255, 255, 255, 0.98); text-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
-      .audio-display.blizzard .song-artist { color: rgba(220, 240, 255, 0.6); }
+      .player-btn.play-btn:hover {
+        background: rgba(255,255,255,0.2);
+      }
+      
+      .player-btn svg {
+        width: 14px;
+        height: 14px;
+        fill: currentColor;
+      }
+      
+      .player-btn.play-btn svg {
+        width: 16px;
+        height: 16px;
+      }
+      
+      .volume-control {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-left: 8px;
+        padding-left: 8px;
+        border-left: 1px solid rgba(255,255,255,0.1);
+      }
+      
+      .player-divider {
+        width: 1px;
+        height: 24px;
+        background: rgba(255,255,255,0.1);
+        margin: 0 4px;
+      }
+      
+      /* Theme-specific song title colors */
+      .music-player.normal .song-title { color: rgba(200, 210, 255, 0.9); }
+      .music-player.neon .song-title { color: rgba(255, 100, 150, 0.95); text-shadow: 0 0 20px rgba(255, 0, 100, 0.4); }
+      .music-player.matcha .song-title { color: rgba(180, 220, 180, 0.9); }
+      .music-player.beach .song-title { color: rgba(135, 206, 235, 0.95); text-shadow: 0 0 15px rgba(30, 144, 255, 0.3); }
+      .music-player.blizzard .song-title { color: rgba(255, 255, 255, 0.98); text-shadow: 0 0 15px rgba(255, 255, 255, 0.5); }
+      
+      /* Theme-specific active button colors */
+      .music-player.neon .player-btn.active { background: rgba(255, 0, 100, 0.3); color: rgba(255, 100, 150, 1); }
+      .music-player.matcha .player-btn.active { background: rgba(100, 180, 100, 0.3); color: rgba(150, 220, 150, 1); }
+      .music-player.beach .player-btn.active { background: rgba(30, 144, 255, 0.3); color: rgba(100, 180, 255, 1); }
+      .music-player.blizzard .player-btn.active { background: rgba(255, 255, 255, 0.25); color: rgba(255, 255, 255, 1); }
       
       /* Mouse Mode Toggle */
       .mouse-mode-toggle {
@@ -761,29 +784,39 @@
       </svg>
     </div>
     
-    <div class="audio-display normal" id="audioDisplay">
-      <button class="audio-toggle" id="audioToggle">♪ Enable Audio</button>
+    <div class="music-player normal" id="musicPlayer">
       <div class="audio-visualizer normal" id="audioVisualizer">
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
-        <div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
+        <div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div><div class="audio-bar"></div>
       </div>
-      <div class="song-info" id="songInfo">
-        <div class="song-title" id="songTitle">Listening...</div>
-        <div class="song-artist" id="songArtist">Waiting for audio</div>
+      <div class="song-title" id="songTitle">Select a song to play</div>
+      <div class="player-controls">
+        <button class="player-btn" id="shuffleBtn" title="Shuffle">
+          <svg viewBox="0 0 24 24"><path d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z"/></svg>
+        </button>
+        <button class="player-btn" id="prevBtn" title="Previous">
+          <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        <button class="player-btn play-btn" id="playBtn" title="Play">
+          <svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <button class="player-btn" id="nextBtn" title="Next">
+          <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+        <button class="player-btn" id="loopBtn" title="Loop">
+          <svg viewBox="0 0 24 24"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/></svg>
+        </button>
+        <div class="player-divider"></div>
+        <button class="player-btn" id="volDownBtn" title="Volume Down">
+          <svg viewBox="0 0 24 24"><path d="M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z"/></svg>
+        </button>
+        <button class="player-btn" id="volUpBtn" title="Volume Up">
+          <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        </button>
       </div>
     </div>
 
@@ -1011,8 +1044,7 @@
               e.target.closest('#settingsPanel') ||
               e.target.closest('#mouseModeToggle') ||
               e.target.closest('.mouse-mode-hint') ||
-              e.target.closest('#audioToggle') ||
-              e.target.closest('.audio-display')) return;
+              e.target.closest('.music-player')) return;
           
           isHolding = true;
           holdStartTime = Date.now();
@@ -1117,99 +1149,171 @@
         
         document.addEventListener('mousemove', onMouseMove);
         
-        // Audio Reactivity System
-        var audioContext = null;
-        var analyser = null;
-        var microphone = null;
-        var dataArray = null;
-        var audioEnabled = false;
-        var audioToggle = document.getElementById('audioToggle');
+        // Music Player System
+        var musicPlayer = document.getElementById('musicPlayer');
         var audioVisualizer = document.getElementById('audioVisualizer');
-        var audioDisplay = document.getElementById('audioDisplay');
-        var songInfo = document.getElementById('songInfo');
         var songTitle = document.getElementById('songTitle');
-        var songArtist = document.getElementById('songArtist');
+        var playBtn = document.getElementById('playBtn');
+        var playIcon = document.getElementById('playIcon');
+        var prevBtn = document.getElementById('prevBtn');
+        var nextBtn = document.getElementById('nextBtn');
+        var shuffleBtn = document.getElementById('shuffleBtn');
+        var loopBtn = document.getElementById('loopBtn');
+        var volUpBtn = document.getElementById('volUpBtn');
+        var volDownBtn = document.getElementById('volDownBtn');
         var audioBars = audioVisualizer.querySelectorAll('.audio-bar');
         var smoothedLevel = 0;
         
-        // MediaSession API for song info
-        function updateSongInfo() {
-          if ('mediaSession' in navigator && navigator.mediaSession.metadata) {
-            var metadata = navigator.mediaSession.metadata;
-            songTitle.textContent = metadata.title || 'Unknown Track';
-            songArtist.textContent = metadata.artist || 'Unknown Artist';
+        // Audio context for visualizer
+        var audioContext = null;
+        var analyser = null;
+        var audioSource = null;
+        var dataArray = null;
+        
+        // Music playlist
+        var playlist = [
+          "39  Baldur's Gate 3 Original Soundtrack - Down By The River.mp3",
+          "ATARAXIA - Patterns.mp3",
+          "Belle - Swarms of Song _ Belle (Original Motion Picture Soundtrack) - English Edition.mp3",
+          "Dragon Age Inquisition Theme.mp3",
+          "Forgotten Words (忘れじの言の葉) ／DAZBEE cover.mp3",
+          "Ghost Duet - Louie Zong.mp3",
+          "girl in red - girls.mp3",
+          "Grover Washington Jr. - Just the Two of Us (feat. Bill Withers) (Official Lyric Video).mp3",
+          "Mili - Compass [Limbus Company].mp3",
+          "Quiet Galaxy.mp3",
+          "Rokudenashi - Spica【Official Music Video】.mp3",
+          "secret base ~Kimi ga Kureta Mono~ (10 years after ver.) - AnoHana ED - Lyrics.mp3",
+          "Suzume no Tojimari『Suzume』Theme Song.mp3",
+          "The Chainsmokers & Coldplay - Something Just Like This (Official Lyric Video).mp3",
+          "The Greatest Showman Cast - A Million Dreams (Official Audio).mp3",
+          "Von - Patterns ft. Emi Evans.mp3",
+          "You Will Be Okay Sing-Along _ Helluva Boss _ Prime Video.mp3",
+          "妖精の霧.mp3"
+        ];
+        
+        var currentTrack = 0;
+        var isPlaying = false;
+        var isLooping = false;
+        var isShuffling = false;
+        var audio = new Audio();
+        audio.volume = 0.7;
+        
+        // Extract clean song name from filename
+        function getSongName(filename) {
+          var name = filename.replace('.mp3', '');
+          // Remove leading track numbers like "39  "
+          name = name.replace(/^\d+\s+/, '');
+          return name;
+        }
+        
+        // Initialize audio context for visualizer
+        function initAudioContext() {
+          if (audioContext) return;
+          
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          analyser = audioContext.createAnalyser();
+          analyser.fftSize = 64;
+          analyser.smoothingTimeConstant = 0.85;
+          
+          audioSource = audioContext.createMediaElementSource(audio);
+          audioSource.connect(analyser);
+          analyser.connect(audioContext.destination);
+          
+          dataArray = new Uint8Array(analyser.frequencyBinCount);
+        }
+        
+        // Load and play track
+        function loadTrack(index) {
+          currentTrack = index;
+          audio.src = 'music/' + encodeURIComponent(playlist[index]);
+          songTitle.textContent = getSongName(playlist[index]);
+          
+          if (isPlaying) {
+            audio.play();
+          }
+        }
+        
+        // Play/Pause toggle
+        function togglePlay() {
+          if (!audioContext) {
+            initAudioContext();
+          }
+          
+          if (audioContext.state === 'suspended') {
+            audioContext.resume();
+          }
+          
+          if (isPlaying) {
+            audio.pause();
+            isPlaying = false;
+            playIcon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+            audioVisualizer.classList.remove('active');
           } else {
-            songTitle.textContent = 'Audio Active';
-            songArtist.textContent = 'Microphone input';
-          }
-        }
-        
-        // Listen for media session changes
-        if ('mediaSession' in navigator) {
-          setInterval(updateSongInfo, 1000);
-        }
-        
-        async function initAudio() {
-          try {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            analyser.fftSize = 64;
-            analyser.smoothingTimeConstant = 0.8;
-            
-            var stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-            microphone = audioContext.createMediaStreamSource(stream);
-            microphone.connect(analyser);
-            
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            audioEnabled = true;
-            
-            audioToggle.textContent = '♪ Audio Active';
-            audioToggle.classList.add('active');
+            audio.play();
+            isPlaying = true;
+            playIcon.innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
             audioVisualizer.classList.add('active');
-            songInfo.classList.add('active');
-            
-            updateSongInfo();
-            updateAudio();
-            
-          } catch (err) {
-            console.error('Audio access denied:', err);
-            audioToggle.textContent = '♪ Access Denied';
-            songTitle.textContent = 'Microphone access required';
-            songArtist.textContent = 'Click to retry';
+            updateVisualizer();
           }
         }
         
-        function stopAudio() {
-          if (microphone) {
-            microphone.disconnect();
-            microphone = null;
+        // Next track
+        function nextTrack() {
+          if (isShuffling) {
+            var newIndex;
+            do {
+              newIndex = Math.floor(Math.random() * playlist.length);
+            } while (newIndex === currentTrack && playlist.length > 1);
+            loadTrack(newIndex);
+          } else {
+            loadTrack((currentTrack + 1) % playlist.length);
           }
-          if (audioContext) {
-            audioContext.close();
-            audioContext = null;
-          }
-          audioEnabled = false;
-          audioToggle.textContent = '♪ Enable Audio';
-          audioToggle.classList.remove('active');
-          audioVisualizer.classList.remove('active');
-          songInfo.classList.remove('active');
-          soulUniforms.audioLevel.value = 0;
-          smoothedLevel = 0;
         }
         
-        function updateAudio() {
-          if (!audioEnabled || !analyser) return;
+        // Previous track
+        function prevTrack() {
+          if (audio.currentTime > 3) {
+            audio.currentTime = 0;
+          } else {
+            loadTrack((currentTrack - 1 + playlist.length) % playlist.length);
+          }
+        }
+        
+        // Toggle loop
+        function toggleLoop() {
+          isLooping = !isLooping;
+          audio.loop = isLooping;
+          loopBtn.classList.toggle('active', isLooping);
+        }
+        
+        // Toggle shuffle
+        function toggleShuffle() {
+          isShuffling = !isShuffling;
+          shuffleBtn.classList.toggle('active', isShuffling);
+        }
+        
+        // Volume controls
+        function volumeUp() {
+          audio.volume = Math.min(1, audio.volume + 0.1);
+        }
+        
+        function volumeDown() {
+          audio.volume = Math.max(0, audio.volume - 0.1);
+        }
+        
+        // Update visualizer
+        function updateVisualizer() {
+          if (!isPlaying || !analyser) return;
           
           analyser.getByteFrequencyData(dataArray);
           
-          // Calculate average level
+          // Calculate average level for particle reactivity
           var sum = 0;
           for (var i = 0; i < dataArray.length; i++) {
             sum += dataArray[i];
           }
           var average = sum / dataArray.length / 255;
-          
-          // Smooth the audio level
           smoothedLevel = smoothedLevel * 0.7 + average * 0.3;
           soulUniforms.audioLevel.value = smoothedLevel;
           
@@ -1218,27 +1322,37 @@
           var step = Math.floor(dataArray.length / barCount);
           for (var i = 0; i < barCount; i++) {
             var value = dataArray[i * step] || 0;
-            var height = Math.max(3, (value / 255) * 30);
+            var height = Math.max(2, (value / 255) * 26);
             audioBars[i].style.height = height + 'px';
           }
           
-          requestAnimationFrame(updateAudio);
+          requestAnimationFrame(updateVisualizer);
         }
         
-        audioToggle.addEventListener('click', function() {
-          if (audioEnabled) {
-            stopAudio();
-          } else {
-            initAudio();
+        // Event listeners
+        playBtn.addEventListener('click', togglePlay);
+        nextBtn.addEventListener('click', nextTrack);
+        prevBtn.addEventListener('click', prevTrack);
+        loopBtn.addEventListener('click', toggleLoop);
+        shuffleBtn.addEventListener('click', toggleShuffle);
+        volUpBtn.addEventListener('click', volumeUp);
+        volDownBtn.addEventListener('click', volumeDown);
+        
+        // Auto-play next track when current ends
+        audio.addEventListener('ended', function() {
+          if (!isLooping) {
+            nextTrack();
           }
         });
         
-        // Update audio display theme when theme changes
-        var originalToggleClick = toggleBtn.onclick;
+        // Load first track (but don't play)
+        loadTrack(0);
+        
+        // Update music player theme when theme changes
         toggleBtn.addEventListener('click', function() {
           var theme = themes[currentTheme];
-          audioDisplay.className = 'audio-display ' + theme.name;
-          audioVisualizer.className = 'audio-visualizer ' + theme.name + (audioEnabled ? ' active' : '');
+          musicPlayer.className = 'music-player ' + theme.name;
+          audioVisualizer.className = 'audio-visualizer ' + theme.name + (isPlaying ? ' active' : '');
         });
         
         // Mouse Attraction/Repulsion System
@@ -1405,8 +1519,8 @@
         audioVisibilityToggle.addEventListener('click', function() {
           audioVisible = !audioVisible;
           audioVisibilityToggle.classList.toggle('active', audioVisible);
-          audioDisplay.style.opacity = audioVisible ? '1' : '0';
-          audioDisplay.style.pointerEvents = audioVisible ? 'auto' : 'none';
+          musicPlayer.style.opacity = audioVisible ? '1' : '0';
+          musicPlayer.style.pointerEvents = audioVisible ? 'auto' : 'none';
         });
 
       }
