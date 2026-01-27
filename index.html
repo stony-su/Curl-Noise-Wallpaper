@@ -539,6 +539,59 @@
         color: rgba(150,180,255,0.95);
       }
       
+      /* Theme-specific settings toggle button */
+      .settings-toggle.neon {
+        border-color: rgba(255,100,150,0.3);
+        color: rgba(255,100,150,0.8);
+      }
+      .settings-toggle.neon:hover {
+        background: rgba(255,0,100,0.15);
+      }
+      .settings-toggle.neon.active {
+        background: rgba(255,0,100,0.2);
+        border-color: rgba(255,0,100,0.4);
+        color: rgba(255,100,150,0.95);
+      }
+      
+      .settings-toggle.matcha {
+        border-color: rgba(140,180,140,0.3);
+        color: rgba(150,200,150,0.8);
+      }
+      .settings-toggle.matcha:hover {
+        background: rgba(100,180,100,0.15);
+      }
+      .settings-toggle.matcha.active {
+        background: rgba(100,180,100,0.2);
+        border-color: rgba(100,180,100,0.4);
+        color: rgba(150,220,150,0.95);
+      }
+      
+      .settings-toggle.beach {
+        border-color: rgba(100,150,200,0.3);
+        color: rgba(100,180,255,0.8);
+      }
+      .settings-toggle.beach:hover {
+        background: rgba(30,144,255,0.15);
+      }
+      .settings-toggle.beach.active {
+        background: rgba(30,144,255,0.2);
+        border-color: rgba(30,144,255,0.4);
+        color: rgba(100,180,255,0.95);
+      }
+      
+      .settings-toggle.blizzard {
+        border-color: rgba(255,255,255,0.4);
+        color: rgba(255,255,255,0.9);
+      }
+      .settings-toggle.blizzard:hover {
+        background: rgba(255,255,255,0.2);
+      }
+      .settings-toggle.blizzard.active {
+        background: rgba(255,255,255,0.25);
+        border-color: rgba(255,255,255,0.5);
+        color: rgba(255,255,255,1);
+      }
+      
       .settings-panel {
         position: fixed;
         top: 0;
@@ -1145,6 +1198,9 @@
           
           // Update settings panel theme
           settingsPanel.className = 'settings-panel' + (settingsPanelOpen ? ' open' : '') + ' ' + theme.name;
+          
+          // Update settings toggle button theme
+          settingsToggle.className = 'settings-toggle' + (settingsPanelOpen ? ' active' : '') + ' ' + theme.name;
         });
         
         // Hold-to-reset functionality
@@ -1573,14 +1629,14 @@
           settingsPanelOpen = true;
           settingsPanel.className = 'settings-panel open ' + themes[currentTheme].name;
           settingsOverlay.classList.add('active');
-          settingsToggle.classList.add('active');
+          settingsToggle.className = 'settings-toggle active ' + themes[currentTheme].name;
         }
         
         function closeSettings() {
           settingsPanelOpen = false;
           settingsPanel.className = 'settings-panel ' + themes[currentTheme].name;
           settingsOverlay.classList.remove('active');
-          settingsToggle.classList.remove('active');
+          settingsToggle.className = 'settings-toggle ' + themes[currentTheme].name;
         }
         
         settingsToggle.addEventListener('click', function(e) {
