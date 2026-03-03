@@ -41,6 +41,17 @@ Physics logic is written in GLSL. Each simulation mode (curl, flocking, etc.) ha
 - **GPGPU:** Physics is computed for every particle using fragment shaders. Position and velocity are encoded as colors in floating-point textures.
 - **Data Flow:** Each frame, the simulation shader updates positions/velocities, and the renderer displays the result.
 
+## Tech Stack
+
+| Technology | Role |
+|---|---|
+| **Three.js** | 3D rendering engine — handles scenes, cameras, materials, and the WebGL context |
+| **WebGL** | Low-level browser graphics API that Three.js targets; enables GPU-accelerated rendering |
+| **GLSL** | Shader language used for simulation logic (fragment shaders) and visual output (vertex/fragment shaders) |
+| **JavaScript (ES5)** | Application logic, scene setup, animation loop, and user interaction |
+| **jQuery** | DOM manipulation and event handling for UI controls |
+| **HTML5 / CSS** | Page structure and styling |
+
 ## Credits
 
 Inspired by:
